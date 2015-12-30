@@ -6,6 +6,7 @@ Properties {
 	_HitIntensity ("Hit Intensity", float) = 0.0
 	_TimeOfHit ("Time since last Hit", float) = 0.0
 	_LastFrame ("Last Frame", 2D) = "white" {}
+	// I'm a test change to test changes
 }
 
 Category {
