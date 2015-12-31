@@ -139,8 +139,6 @@ Category {
 				float relativeZ;
 				float distanceSquared;
 
-				float distance1;
-
 				float fade1;
 
 				float timeFade;
@@ -154,14 +152,13 @@ Category {
 
 					distanceSquared = relativeX * relativeX + relativeY * relativeY + relativeZ * relativeZ;
 
-					distance1 = 20.0;
-
-					fade1 = max((distance1 - distanceSquared) / distance1, 0.0);
+					fade1 = max((20.0 - distanceSquared) / 40.0, 0.0);
+					if ((1.0 - distanceSquared) > 0.0) fade1 = 1.0;
 
 					half elapsedTime = _Time.y - _ShieldHitBuffer[i][3];
 					timeFade = max((0.5 - elapsedTime) / 0.5, 0.0); // Not sure about this.
 
-					totalFade = max(totalFade, fade1*0.4*timeFade);
+					totalFade = max(totalFade, fade1*timeFade);
 				}
 				
 				//totalFade = min(totalFade, 1.0);
@@ -173,7 +170,7 @@ Category {
 
 				col *= _TintColor * tex2D(_PatternTex, iv.texcoord);
 				
-				float4 newCol = tex2D(_LastFrame, iv.texcoord1) * 0.9;
+				float4 newCol = tex2D(_LastFrame, half2(iv.texcoord1.x, iv.texcoord1.y)) * 0.9;
 				col = max(col, newCol);
 				
 				return col;
