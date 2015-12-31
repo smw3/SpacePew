@@ -23,7 +23,7 @@ public class ShieldBubbleBlur : MonoBehaviour {
 		cam = transform.GetComponent<Camera>();
 
 		cam.transform.localPosition = new Vector3(0,5.0f,0);
-		cam.transform.rotation = Quaternion.Euler(90, 0, 0);
+		cam.transform.localRotation = Quaternion.Euler(90, 0, 0);
 		
 		cam.orthographic = true;
 		
