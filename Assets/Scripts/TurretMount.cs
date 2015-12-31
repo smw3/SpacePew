@@ -43,12 +43,13 @@ public class TurretMount : MonoBehaviour {
 	void Update () {
 		if (!Turret) return;
 
-		if (Automated) {
-			DoAutoAim(Target);
+		if (Automated && Target && Armed) {
+            DoAutoAim(Target);
 
-			if (canHitTarget(Target) && Armed) {
-				Shoot();
-			}
+            if (canHitTarget(Target) && Armed)
+            {
+                Shoot();
+            }
 		} else {
 			DoMouseAim();
 		}
@@ -61,32 +62,92 @@ public class TurretMount : MonoBehaviour {
 		Debug.DrawRay(this.transform.position, Turret.transform.rotation * Vector3.forward * Turret.getAproxRange(), new Color(0.3f, 0, 0));
 	}
 
-	bool canHitTarget(GameObject target) {
-		float turretAngle = Turret.transform.rotation.eulerAngles.y;
+	public bool canHitTarget(GameObject target) {
+        Collider[] targetColliders = target.GetComponentsInChildren<Collider>();
 
-		Quaternion lookRotation = Quaternion.LookRotation(target.transform.position - this.transform.position);
-		float angleToTarget = lookRotation.eulerAngles.y;
+        Ray myRay = new Ray(this.transform.position, Turret.transform.rotation * Vector3.forward);
+        RaycastHit[] hits = Physics.RaycastAll(myRay, Turret.getAproxRange());
 
-		float difference = Mathf.Abs(Mathf.DeltaAngle(turretAngle,angleToTarget));
+        //Debug.Log("Ray at angle " + (idealAngle + a));
 
-		//Debug.Log (difference);
+        foreach (RaycastHit hit in hits)
+        {
+            foreach (Collider col in targetColliders)
+            {
+                if (hit.collider == col)
+                {
+                    //Debug.Log("Ray hit the collider with angle " + a);
+                    return true;
+                }
+            }
+        }
 
-		if (difference < 5) return true;
-
-		return false;
-	}
+        return false;
+    }
 
 	void DoAutoAim(GameObject target) {
 		Quaternion lookRotation = Quaternion.LookRotation(target.transform.position - this.transform.position);
-		float lookAngle = lookRotation.eulerAngles.y;
-		
-		// Current rotation of the ship object
-		float parentAngle = this.transform.parent.rotation.eulerAngles.y;
-		
-		// Get the desired firing angle independent from current ship rotation
-		float relativeDesiredAngle = lookAngle - parentAngle;
+		float targetAngle = lookRotation.eulerAngles.y;
+        Collider[] targetColliders = target.GetComponentsInChildren<Collider>();
+
+        // Current rotation of the ship object
+        float parentAngle = this.transform.parent.rotation.eulerAngles.y;
+
+        float idealAngle = minAngle + (maxAngle - minAngle) / 2 + parentAngle;
+        while (idealAngle < 0.0f) idealAngle += 360.0f;
+        while (idealAngle > 360.0f) idealAngle -= 360.0f;
+
+
+        float step = 2.0f;
+
+        //Debug.Log("Target is at " + targetAngle + " but " + idealAngle + " would be better");
+
+
+        // Ideally, a turret wants to shoot at the angle where it has the maximum amount of movement left, i.e. its middle
+        // Cast a ray in its middle, see if it hits.
+        // Continue casting rays every [step] degrees until one hits, continuously getting further away from the ideal angle
+        // Use the first one, i.e. the clostest one to the middle
+
+        bool hasHit = false;
+        for (float a = 0; a < (maxAngle - minAngle) / 2; a += step)
+        {
+            for (float sign = -1f; sign < 1; sign += 2f)
+            { 
+                Ray myRay = new Ray(this.transform.position, Quaternion.Euler(0f, idealAngle + a*sign, 0f) * Vector3.forward);
+                RaycastHit[] hits = Physics.RaycastAll(myRay, Turret.getAproxRange());
+
+                //Debug.Log("Ray at angle " + (idealAngle + a));
+
+                foreach (RaycastHit hit in hits)
+                {
+                    foreach (Collider col in targetColliders)
+                    {
+                        if (hit.collider == col)
+                        {
+                            //Debug.Log("Ray hit the collider with angle " + a);
+                            hasHit = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (hasHit)
+                {
+                    targetAngle = idealAngle + a * sign;
+                    break;
+                }
+            }
+
+            if (hasHit) break;
+        }
+
+        //Debug.Log("Final angle: " + targetAngle);
+
+        // Get the desired firing angle independent from current ship rotation
+        float relativeDesiredAngle = targetAngle - parentAngle;
 		if (relativeDesiredAngle > 180f) relativeDesiredAngle -= 360f; // ... and change it to -180° ... 180°
 		if (relativeDesiredAngle < -180f) relativeDesiredAngle += 360f;
+
 		
 		float actualAngle = Utility.clampAngle(relativeDesiredAngle, minAngle, maxAngle) + parentAngle;
 		
