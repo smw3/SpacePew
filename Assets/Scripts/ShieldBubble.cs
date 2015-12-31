@@ -12,7 +12,10 @@ public class ShieldBubble : MonoBehaviour, ILaserTarget {
 
 	private string MaterialColor = "_TintColor";
 
-	private struct shieldHit
+    private int index = 0;
+    private Matrix4x4 hitDataMatrix = new Matrix4x4();
+
+    private struct shieldHit
 	{
 		public Vector3 pos;
 		public float time;
@@ -23,7 +26,7 @@ public class ShieldBubble : MonoBehaviour, ILaserTarget {
 	void Start () {
 		MR = GetComponent<MeshRenderer>();
 		defaultColor = MR.material.GetColor(MaterialColor);
-	}
+    }
 
 	public void OnLaserHit(Vector3 collisionPoint, float damage) {
 		ShieldHit(collisionPoint, damage);
@@ -47,14 +50,23 @@ public class ShieldBubble : MonoBehaviour, ILaserTarget {
 		ShieldHit(col.contacts[0].point, damage);
 	}
 
-	void Update() {
-		if (hitQueue.Count > 0) {
-			shieldHit sh = (shieldHit)hitQueue.Dequeue();
+	void OnRenderObject() {
+        shieldHit sh;
+        for (int i=0; i<4; i++)
+        {
+            if (hitQueue.Count == 0) break;
+            sh = (shieldHit)hitQueue.Dequeue();
 
-			MR.material.SetVector("_HitPosition", new Vector4(sh.pos.x, sh.pos.y, sh.pos.z, 0));
-			MR.material.SetFloat("_TimeOfHit", sh.time);
-			MR.material.SetFloat ("_HitIntensity", sh.intensity);
-		}
+            // Discard any hit longer than 2 seconds ago
+            if ((Time.timeSinceLevelLoad - sh.time) > 2.0f) break;
+
+            hitDataMatrix.SetRow(index, new Vector4(sh.pos.x, sh.pos.y, sh.pos.z, sh.time));
+
+            index = (index + 1) % 4;
+        }
+
+
+        MR.material.SetMatrix("_ShieldHitBuffer", hitDataMatrix);
 	}
 
 	private void ShieldHit(Vector3 contactPoint, float intensity) {
@@ -69,6 +81,11 @@ public class ShieldBubble : MonoBehaviour, ILaserTarget {
 		EntityEffect LightEffect = (EntityEffect)Instantiate(OnHitEffect, contactPoint, Quaternion.identity);
 		LightEffect.GetComponent<EntityEffect_LightFade>().setIntensity(intensity);
 	}
+
+    public Queue getImpactLocationsQueue() {
+        return hitQueue;
+
+    }
 
 	private void SetShieldIntensity(float intensity) {
 		float maxAlpha = defaultColor.a;

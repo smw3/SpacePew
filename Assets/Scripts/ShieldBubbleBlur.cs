@@ -3,10 +3,10 @@ using System.Collections;
 
 public class ShieldBubbleBlur : MonoBehaviour {
 	
-	public RenderTexture rtBuffer1;
-	public RenderTexture rtBuffer2;
+	private RenderTexture rtBuffer1;
+    private RenderTexture rtBuffer2;
 
-	public RenderTexture currentBuffer;
+    private RenderTexture currentBuffer;
 
 	private Material shieldMaterial;
 	private MeshRenderer MR;
