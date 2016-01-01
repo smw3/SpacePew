@@ -44,8 +44,6 @@ public class ShipMovementControl : MonoBehaviour {
 		} else {
 			toggleThrust(false);
 		}
-
-		//Debug.Log (myRigidbody.velocity.magnitude+" "+Time.frameCount);
 	}
 
 	private void turn(float direction) {

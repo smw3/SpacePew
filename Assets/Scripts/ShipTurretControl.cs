@@ -12,9 +12,6 @@ public class ShipTurretControl : MonoBehaviour {
 		for (int i=0; i < this.transform.childCount; i++) {
 			Transform child = this.transform.GetChild(i);
 
-//			if (child.CompareTag(StringController.GetInstance().szTurretMountTag)) {
-//				talTurretMounts.Add(child);
-//			}
 			TurretMount turretMount = child.GetComponent<TurretMount>();
 			if (turretMount) {
 				talTurretMounts.Add (turretMount);
@@ -32,7 +29,7 @@ public class ShipTurretControl : MonoBehaviour {
 		}
 	}
 
-	void Update () {
+	void FixedUpdate () {
 		if (Input.GetMouseButton(0)) {
 			Shoot ();
 		}
