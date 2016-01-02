@@ -32,25 +32,23 @@ public class ShipMovementControl : MonoBehaviour {
 		}
 	}
 
-	void FixedUpdate() {
-		if (Input.GetKey(KeyCode.A)) {
-			turn (-turnSpeed);
-		} else if (Input.GetKey(KeyCode.D)) {
-			turn (turnSpeed);
-		}
-
-		if (Input.GetKey (KeyCode.W)) {
-			toggleThrust(true);
-		} else {
-			toggleThrust(false);
-		}
-	}
-
-	private void turn(float direction) {
+	protected void turn(float direction) {
 		myRigidbody.AddTorque(0f,direction,0f);
 	}
 
-	private void toggleThrust(bool active) {
+    protected void turnTowards(float angle)
+    {
+        float currentAngle = this.transform.rotation.eulerAngles.y;
+
+        float deltaAngle = Mathf.DeltaAngle(currentAngle, angle);
+        Debug.Log("Turn towards: Delta angle: " + deltaAngle);
+
+        if (deltaAngle > 0) turn(Mathf.Min(turnSpeed, deltaAngle));
+        else turn(-Mathf.Min(turnSpeed, Mathf.Abs(deltaAngle)));
+
+    }
+
+	protected void toggleThrust(bool active) {
 		isThrusting = active;
 
 		if (active) {
