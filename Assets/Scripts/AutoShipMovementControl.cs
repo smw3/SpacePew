@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class AutoShipMovementControl : ShipMovementControl {
 
@@ -10,7 +9,7 @@ public class AutoShipMovementControl : ShipMovementControl {
 
     private float currentTargetAngle;
 
-    void Update () {
+    void Update() {
         if (!active) return;
         if (!Target) return;
 
@@ -24,7 +23,7 @@ public class AutoShipMovementControl : ShipMovementControl {
 
         float currentDistanceToTarget = Vector3.Magnitude(this.transform.position - Target.transform.position);
 
-        
+
         // Find the tangent point of a circle around the target with radius [desiredDistance]
         // In essence, this should make the ship want to "orbit" its target
 
@@ -49,11 +48,11 @@ public class AutoShipMovementControl : ShipMovementControl {
 
         Vector3 targetPoint;
 
-        if (distanceToClockwise < distanceToAntiClockwise)
-        {
+        if (distanceToClockwise < distanceToAntiClockwise) {
             //Debug.Log("Fly towards clockwise (red)!");
             targetPoint = clockwiseTangentPoint;
-        } else {
+        }
+        else {
             //Debug.Log("Fly towards anti-clockwise (green)");
             targetPoint = antiClockwiseTangentPoint;
         }

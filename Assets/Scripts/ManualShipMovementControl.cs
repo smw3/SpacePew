@@ -1,25 +1,19 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class ManualShipMovementControl : ShipMovementControl {
 
-    void FixedUpdate()
-    {
-        if (Input.GetKey(KeyCode.A))
-        {
+    void FixedUpdate() {
+        if (Input.GetKey(KeyCode.A)) {
             turn(-turnSpeed);
         }
-        else if (Input.GetKey(KeyCode.D))
-        {
+        else if (Input.GetKey(KeyCode.D)) {
             turn(turnSpeed);
         }
 
-        if (Input.GetKey(KeyCode.W))
-        {
+        if (Input.GetKey(KeyCode.W)) {
             toggleThrust(true);
         }
-        else
-        {
+        else {
             toggleThrust(false);
         }
     }
