@@ -8,7 +8,7 @@ public class EntityCollisionEvent : UnityEvent<Collision>
 {
 }
 
-public class EntityBullet : MonoBehaviour {
+public class EntityBullet : MonoBehaviour, ILaserTarget {
 	[SerializeField]
 	public EntityCollisionEvent Hit;
 	public UnityEvent Fade;
@@ -38,4 +38,10 @@ public class EntityBullet : MonoBehaviour {
 		Hit.Invoke(col);
 		Destroy(this.gameObject);
 	}
+
+    public void OnLaserHit(Vector3 collisionPoint, float intensity)
+    {
+        Hit.Invoke(null);
+        Destroy(this.gameObject);
+    }
 }

@@ -31,16 +31,17 @@ public class Laser : MonoBehaviour {
 
 		currentLength = maxLength;
 
-		if (Physics.Raycast(laserRay, out hit, maxLength)) { 
-			//Debug.Log (hit.transform.name+" was lasered");
-			currentLength = hit.distance - 2.2f;
+        if (Physics.Raycast(laserRay, out hit, maxLength))
+        {
+            //Debug.Log (hit.transform.name+" was lasered");
+            currentLength = hit.distance - 2.2f;
 
-			ILaserTarget laserTarget = hit.collider.gameObject.GetComponent<ILaserTarget>();
-			if (laserTarget != null) {
-				laserTarget.OnLaserHit(hit.point, damage);
-			}
-		}
-
+            ILaserTarget laserTarget = hit.collider.gameObject.GetComponent<ILaserTarget>();
+            if (laserTarget != null)
+            {
+                laserTarget.OnLaserHit(hit.point, damage);
+            }
+        }
 
 		vertices = createVertices(width, currentLength);
 		triangles = createTriangles();
@@ -76,15 +77,6 @@ public class Laser : MonoBehaviour {
 		float fade = 1 - (Time.timeSinceLevelLoad - TimeAtCreation) / Lifetime;
 		
 		this.laserMaterial.SetColor("_TintColor", new Color(defaultColor.r, defaultColor.b, defaultColor.g, fade));
-		
-		// update vertices
-		// Check if the last shot was long enough ago
-		if (lastDamageInterval + DamageInterval < Time.timeSinceLevelLoad) {
-			// We are going to fire. Save the time
-			lastDamageInterval = Time.timeSinceLevelLoad;
-		} else {
-			return;
-		}
 
 		currentLength = maxLength;
 
@@ -96,7 +88,7 @@ public class Laser : MonoBehaviour {
 			currentLength = hit.distance - 2.2f;
 			
 			ILaserTarget laserTarget = hit.collider.gameObject.GetComponent<ILaserTarget>();
-			if (laserTarget != null) {
+			if (laserTarget != null && canDamage()) {
 				laserTarget.OnLaserHit(hit.point, damage);
 			}
 		}
@@ -105,7 +97,19 @@ public class Laser : MonoBehaviour {
 
 	}
 
+    private bool canDamage()
+    {
 
+        // update vertices
+        // Check if the last shot was long enough ago
+        if (lastDamageInterval + DamageInterval < Time.timeSinceLevelLoad)
+        {
+            // We are going to fire. Save the time
+            lastDamageInterval = Time.timeSinceLevelLoad;
+            return true;
+        }
+        return false;
+    }
 
 	void updateVertices(float newWidth, float newLength) {
 		Mesh mesh = GetComponent<MeshFilter>().mesh;
