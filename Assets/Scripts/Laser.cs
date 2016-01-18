@@ -15,6 +15,7 @@ public class Laser : MonoBehaviour {
     private float lastDamageInterval = 0;
 
     public Material laserMaterial;
+    private Material localMaterial;
     private Color defaultColor;
 
     private Vector3[] vertices;
@@ -57,7 +58,9 @@ public class Laser : MonoBehaviour {
         mesh.uv2 = UV2s;
         mesh.SetTriangles(triangles, 0);
 
-        meshRenderer.material = laserMaterial;
+        localMaterial = Instantiate(laserMaterial);
+        meshRenderer.material = localMaterial;
+
         defaultColor = laserMaterial.GetColor("_TintColor");
 
         TimeAtCreation = Time.timeSinceLevelLoad;
@@ -72,7 +75,7 @@ public class Laser : MonoBehaviour {
 
         float fade = 1 - (Time.timeSinceLevelLoad - TimeAtCreation) / Lifetime;
 
-        this.laserMaterial.SetColor("_TintColor", new Color(defaultColor.r, defaultColor.b, defaultColor.g, fade));
+        this.localMaterial.SetColor("_TintColor", new Color(defaultColor.r, defaultColor.b, defaultColor.g, defaultColor.a * fade));
 
         currentLength = maxLength;
 
