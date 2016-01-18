@@ -60,12 +60,8 @@ public class AutoShipMovementControl : ShipMovementControl {
         currentTargetAngle = Quaternion.LookRotation(this.transform.position - targetPoint).eulerAngles.y + 180f;
         toggleThrust(true);
 
-
-        Debug.DrawRay(clockwiseTangentPoint + Vector3.left * 0.5f, Vector3.right, Color.red);
-        Debug.DrawRay(clockwiseTangentPoint + Vector3.back * 0.5f, Vector3.forward, Color.red);
-
-
-        Debug.DrawRay(antiClockwiseTangentPoint + Vector3.left * 0.5f, Vector3.right, Color.green);
-        Debug.DrawRay(antiClockwiseTangentPoint + Vector3.back * 0.5f, Vector3.forward, Color.green);
+        // Debug draw that indicates current target point
+        //Debug.DrawRay(targetPoint + Vector3.left * 0.5f, Vector3.right, Color.red);
+        //Debug.DrawRay(targetPoint + Vector3.back * 0.5f, Vector3.forward, Color.red);
     }
 }

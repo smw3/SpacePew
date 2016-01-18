@@ -8,6 +8,8 @@ public abstract class Turret : MonoBehaviour
 	// Recoil
 	protected float lastShot = -1;
 	public float TimeBetweenShots = 0.5f;
+
+    public float Spread = 0f;
 	
 	public abstract void Shoot();
 	

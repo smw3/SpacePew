@@ -9,7 +9,7 @@ public class Laser : MonoBehaviour {
     public float damage;
 
     public float TimeAtCreation;
-    private float Lifetime;
+    public float Lifetime;
 
     public float DamageInterval;
     private float lastDamageInterval = 0;
@@ -60,7 +60,6 @@ public class Laser : MonoBehaviour {
         meshRenderer.material = laserMaterial;
         defaultColor = laserMaterial.GetColor("_TintColor");
 
-        Lifetime = 2f;
         TimeAtCreation = Time.timeSinceLevelLoad;
     }
 

@@ -98,7 +98,7 @@ public class TurretMount : MonoBehaviour {
         while (idealAngle > 360.0f) idealAngle -= 360.0f;
 
 
-        float step = 2.0f;
+        float step = 0.1f;
 
         //Debug.Log("Target is at " + targetAngle + " but " + idealAngle + " would be better");
 
@@ -113,26 +113,11 @@ public class TurretMount : MonoBehaviour {
         {
             for (float sign = -1f; sign < 1; sign += 2f)
             { 
-                Ray myRay = new Ray(this.transform.position, Quaternion.Euler(0f, idealAngle + a*sign, 0f) * Vector3.forward);
-                RaycastHit[] hits = Physics.RaycastAll(myRay, Turret.getAproxRange());
+                Ray centerRay = new Ray(this.transform.position, Quaternion.Euler(0f, idealAngle + a*sign, 0f) * Vector3.forward);
+                Ray leftBoundRay = new Ray(this.transform.position, Quaternion.Euler(0f, idealAngle + a * sign - Turret.Spread, 0f) * Vector3.forward);
+                Ray rightBoundRay = new Ray(this.transform.position, Quaternion.Euler(0f, idealAngle + a * sign + Turret.Spread, 0f) * Vector3.forward);
 
-                //Debug.Log("Ray at angle " + (idealAngle + a));
-
-                foreach (RaycastHit hit in hits)
-                {
-                    foreach (Collider col in targetColliders)
-                    {
-                        if (hit.collider == col)
-                        {
-                            //Debug.Log("Ray hit the collider with angle " + a);
-                            hasHit = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (hasHit)
-                {
+                if (Utility.checkIdealFiringAngleForTarget(leftBoundRay, centerRay, rightBoundRay, target, Turret.getAproxRange())) {
                     targetAngle = idealAngle + a * sign;
                     break;
                 }
