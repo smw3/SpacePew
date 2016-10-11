@@ -45,7 +45,7 @@ public class StarfieldController : MonoBehaviour {
 			myNewStar.goStar = goNewStarObject;
 			myNewStar.tStar = goNewStarObject.transform;
 
-			float size = Random.Range(0.01f, 0.1f);
+			float size = Random.Range(0.05f, 0.2f);
 			myNewStar.tStar.localScale = new Vector3(size,size,size);
 
 			myNewStar.fParallaxAmount = Random.Range(0.7f,1f); // 1 = infinite distance, 0 would be same plane as nearby objects, which makes no sense for stars

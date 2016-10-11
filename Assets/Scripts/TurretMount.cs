@@ -119,6 +119,7 @@ public class TurretMount : MonoBehaviour {
 
                 if (Utility.checkIdealFiringAngleForTarget(leftBoundRay, centerRay, rightBoundRay, target, Turret.getAproxRange())) {
                     targetAngle = idealAngle + a * sign;
+                    hasHit = true;
                     break;
                 }
             }
@@ -136,7 +137,7 @@ public class TurretMount : MonoBehaviour {
 		
 		float actualAngle = Utility.clampAngle(relativeDesiredAngle, minAngle, maxAngle) + parentAngle;
 		
-		//Debug.DrawRay(transform.position, Quaternion.Euler(0f, actualAngle, 0f) * Vector3.forward * 10f);
+		//Debug.DrawRay(transform.position, Quaternion.Euler(0f, idealAngle, 0f) * Vector3.forward * 10f);
 		
 		Turret.transform.rotation = Quaternion.Euler(0f, actualAngle, 0f);
 	}
